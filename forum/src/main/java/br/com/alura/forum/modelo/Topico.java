@@ -4,22 +4,32 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+@Entity
 public class Topico {
 
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String titulo;
 	private String mensagem;
 	private LocalDateTime dataCriacao = LocalDateTime.now();
+	@Enumerated(EnumType.STRING) // o atributo status é um enum, quero que o hibernate grave no banco de dados o nome da constante do enum, ao invés da ordem de declaração, passando o valor STRING
 	private StatusTopico status = StatusTopico.NAO_RESPONDIDO;
+	@ManyToOne // muitos para um
 	private Usuario autor;
+	@ManyToOne // um curso pode ter vários tópicos, mas o tópico pertence a um único curso
 	private Curso curso;
+	@OneToMany(mappedBy = "topico") // um tópico pode ter várias respostas, precisa passar uma propriedade, que é o mappedBy, para ele não achar que é um novo mapeamento, porque na classe, e nela, a resposta, estará mapeado o relacionamento com o tópico
 	private List<Resposta> respostas = new ArrayList<>();
 
-	public Topico(String titulo, String mensagem, Curso curso) {
-		this.titulo = titulo;
-		this.mensagem = mensagem;
-		this.curso = curso;
-	}
 
 	@Override
 	public int hashCode() {

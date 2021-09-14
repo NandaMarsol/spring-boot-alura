@@ -1,7 +1,14 @@
 package br.com.alura.forum.modelo;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity // entidade no banco de dados
 public class Usuario {
 
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) // atributo que representa a chave primária
 	private Long id;
 	private String nome;
 	private String email;
