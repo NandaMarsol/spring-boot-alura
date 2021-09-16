@@ -1,5 +1,7 @@
 package br.com.alura.forum.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.alura.forum.modelo.Topico;
@@ -11,5 +13,9 @@ import br.com.alura.forum.modelo.Topico;
  */
 
 public interface TopicoRepository extends JpaRepository<Topico, Long>{
+
+	// o nome do método seguindo esse padrão de nomenclatura o Spring Data consegue gerar a Query automaticamente
+	// o padrão de nomenclatura seria findBy() e o nome do atributo na entidade (do atributo que você quer filtrar)
+	List<Topico> findByCursoNome(String nomeCurso); // Curso é a entidade de relacionamento e Nome é o atributo dentro dessa entidade de relacionamento
 
 }
