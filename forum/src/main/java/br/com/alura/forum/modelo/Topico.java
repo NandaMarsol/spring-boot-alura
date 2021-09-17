@@ -29,6 +29,19 @@ public class Topico {
 	private Curso curso;
 	@OneToMany(mappedBy = "topico") // um tópico pode ter várias respostas, precisa passar uma propriedade, que é o mappedBy, para ele não achar que é um novo mapeamento, porque na classe, e nela, a resposta, estará mapeado o relacionamento com o tópico
 	private List<Resposta> respostas = new ArrayList<>();
+	
+	public Topico() {
+		
+	}
+
+	// construtor para usar no método converter da classe TopicoRequest
+	public Topico(String titulo, String mensagem, Curso curso) {
+		super();
+		this.titulo = titulo;
+		this.mensagem = mensagem;
+		this.curso = curso;
+	}
+
 
 
 	@Override
