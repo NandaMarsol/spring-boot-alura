@@ -6,12 +6,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.alura.forum.controller.dto.DetalhesTopicoDto;
 import br.com.alura.forum.controller.dto.TopicoDto;
 import br.com.alura.forum.controller.request.TopicoRequest;
 import br.com.alura.forum.modelo.Topico;
@@ -54,6 +56,13 @@ public class TopicosController {
         																				   // no final, tem um método .toUri(), que converte e transforma na URL completa, com endereço do servidor e com valores dinâmicos que posso passar como parâmetro no buildAndExpand
 		return ResponseEntity.created(uri).body(new TopicoDto(topico)); // método created() recebe um parâmetro uri, Na sequência, .body(body), porque tenho que passar o corpo - com o 201, além de devolver a uri, preciso devolver um "body", corpo, na resposta. 
 																		// a ideia é criarmos um DTO, então, (new TopicoDto(topico). lembrando que quando dou um new no TopicoDto() posso passar o topico como parâmetro. Dentro dele tem todas as informações que o DTO precisa
+	}
+	
+	@GetMapping("/{id}") // 
+	public DetalhesTopicoDto detalhar(@PathVariable Long id) { // anotação, @PathVariable: o parâmetro Long id não virá numa interrogação e sim no barra ("/"), na URL. 
+		Topico topico = topicoRepository.getOne(id);
+		return new DetalhesTopicoDto(topico);
+		
 	}
 }
 
