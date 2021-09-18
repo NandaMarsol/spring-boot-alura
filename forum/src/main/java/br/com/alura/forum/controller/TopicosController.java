@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.alura.forum.controller.dto.DetalhesTopicoDto;
 import br.com.alura.forum.controller.dto.TopicoDto;
+import br.com.alura.forum.controller.request.AtualizacaoTopicoRequest;
 import br.com.alura.forum.controller.request.TopicoRequest;
 import br.com.alura.forum.modelo.Topico;
 import br.com.alura.forum.repository.CursoRepository;
@@ -64,6 +67,15 @@ public class TopicosController {
 		return new DetalhesTopicoDto(topico);
 		
 	}
+	
+	@PutMapping("/{id}")
+	@Transactional // avisa para o Spring que é para commitar a transação no final do método
+	public ResponseEntity<TopicoDto> atualizar(@PathVariable Long id, @RequestBody AtualizacaoTopicoRequest atualizacaoTopicoRequest) {
+		Topico topico = atualizacaoTopicoRequest.atualizar(id, topicoRepository);
+		
+		return ResponseEntity.ok(new TopicoDto(topico));
+	}
+	
 }
 
 /*
