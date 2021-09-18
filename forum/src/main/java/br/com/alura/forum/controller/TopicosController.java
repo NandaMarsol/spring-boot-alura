@@ -2,6 +2,7 @@ package br.com.alura.forum.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -63,26 +64,40 @@ public class TopicosController {
 	}
 	
 	@GetMapping("/{id}") // 
-	public DetalhesTopicoDto detalhar(@PathVariable Long id) { // anotação, @PathVariable: o parâmetro Long id não virá numa interrogação e sim no barra ("/"), na URL. 
-		Topico topico = topicoRepository.getOne(id);
-		return new DetalhesTopicoDto(topico);
+	public ResponseEntity<DetalhesTopicoDto> detalhar(@PathVariable Long id) { // anotação, @PathVariable: o parâmetro Long id não virá numa interrogação e sim no barra ("/"), na URL. 
+		Optional<Topico> topico = topicoRepository.findById(id); //optional: pode ser que haja um registro ou não
+		
+		if (topico.isPresent()) {
+			return ResponseEntity.ok(new DetalhesTopicoDto(topico.get())); //se existir, ok
+		} 
+		return ResponseEntity.notFound().build(); //se não existir, 404
 		
 	}
 	
 	@PutMapping("/{id}")
 	@Transactional // avisa para o Spring que é para commitar a transação no final do método
 	public ResponseEntity<TopicoDto> atualizar(@PathVariable Long id, @RequestBody AtualizacaoTopicoRequest atualizacaoTopicoRequest) {
-		Topico topico = atualizacaoTopicoRequest.atualizar(id, topicoRepository);
+		Optional<Topico> optional = topicoRepository.findById(id); 
 		
-		return ResponseEntity.ok(new TopicoDto(topico));
+		if(optional.isPresent()) {
+			Topico topico = atualizacaoTopicoRequest.atualizar(id, topicoRepository);
+			return ResponseEntity.ok(new TopicoDto(topico)); //se existir, status 200 ok
+		}
+		
+		return ResponseEntity.notFound().build(); //se não existir, erro 404
+		
 	}
 	
 	@DeleteMapping
-	public ResponseEntity<?> remover(@PathVariable Long id) {
-		topicoRepository.deleteById(id);
+	public ResponseEntity<TopicoDto> remover(@PathVariable Long id) {
+		Optional<Topico> optional = topicoRepository.findById(id);
 		
-		return ResponseEntity.ok().build(); // não devolve nenhum corpo na resposta. vou deixar o ok()vazio, já que só quero devolver o "200 OK".
+		if(optional.isPresent()) {
+			topicoRepository.deleteById(id);
+			return ResponseEntity.ok().build();
+		}
 		
+		return ResponseEntity.notFound().build(); 	
 	}
 	
 }
