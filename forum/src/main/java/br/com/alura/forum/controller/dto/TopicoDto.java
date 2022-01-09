@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+
 import br.com.alura.forum.modelo.Topico;
 
 public class TopicoDto {
@@ -40,8 +42,8 @@ public class TopicoDto {
 	// encapsula dentro da própria classe DTO
 	// esse método recebe a lista de topicos e precisa devolver uma lista de topicoDto, isto é, precisa fazer a conversão
 	// a função do mapeamento será TopicoDto::new, pq ele vai chamar o construtor que recebe o próprio tópico como parâmetro. no final, tem que transformar isso em uma lista, então vamos encadear a chamada para o método collect(), passando collectors.toList() para transformar numa lista
-	public static List<TopicoDto> converter(List<Topico> topicos) {
-		return topicos.stream().map(TopicoDto::new).collect(Collectors.toList());
+	public static Page<TopicoDto> converter(Page<Topico> topicos) {
+		return topicos.map(TopicoDto::new);
 	}
 	
 

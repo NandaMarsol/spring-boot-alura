@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -36,14 +40,16 @@ public class TopicosController {
 	private CursoRepository cursoRepository;
 	
 	@GetMapping
-	public List<TopicoDto> lista(String nomeCurso) {
+	public Page<TopicoDto> lista(@RequestParam(required = false) String nomeCurso, @RequestParam int pagina, @RequestParam int quantidade) {
+		
+		Pageable paginacao = PageRequest.of(pagina, quantidade);
 		
 		if (nomeCurso == null) { // se estiver vindo o parâmetro nomeCurso não vou chamar o findAll
-            List<Topico> topicos = topicoRepository.findAll(); // List<Topico> essa lista vem de topicos = topicoRepository. porque vou usar o Repository que foi injetado, seguindo, vou chamar o método findAll(), que é o método que faz uma consulta carregando todos os registros do banco de dados 
+            Page<Topico> topicos = topicoRepository.findAll(paginacao); // List<Topico> essa lista vem de topicos = topicoRepository. porque vou usar o Repository que foi injetado, seguindo, vou chamar o método findAll(), que é o método que faz uma consulta carregando todos os registros do banco de dados 
             return TopicoDto.converter(topicos); // na hora de chamar o TopicoDto.converter(), preciso passar uma lista chamada topicos
      } else {
     	 
-    	 List<Topico> topicos = topicoRepository.findByCursoNome(nomeCurso); // faz a busca dos tópicos filtrando pelo nome do curso
+    	 Page<Topico> topicos = topicoRepository.findByCursoNome(nomeCurso, paginacao); // faz a busca dos tópicos filtrando pelo nome do curso
          return TopicoDto.converter(topicos);
          
      	}
