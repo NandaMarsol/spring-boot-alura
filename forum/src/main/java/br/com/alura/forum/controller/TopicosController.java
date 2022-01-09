@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,9 +41,9 @@ public class TopicosController {
 	private CursoRepository cursoRepository;
 	
 	@GetMapping
-	public Page<TopicoDto> lista(@RequestParam(required = false) String nomeCurso, @RequestParam int pagina, @RequestParam int quantidade) {
+	public Page<TopicoDto> lista(@RequestParam(required = false) String nomeCurso, @RequestParam int pagina, @RequestParam int quantidade, @RequestParam String ordenacao) {
 		
-		Pageable paginacao = PageRequest.of(pagina, quantidade);
+		Pageable paginacao = PageRequest.of(pagina, quantidade, Direction.ASC, ordenacao);
 		
 		if (nomeCurso == null) { // se estiver vindo o parâmetro nomeCurso não vou chamar o findAll
             Page<Topico> topicos = topicoRepository.findAll(paginacao); // List<Topico> essa lista vem de topicos = topicoRepository. porque vou usar o Repository que foi injetado, seguindo, vou chamar o método findAll(), que é o método que faz uma consulta carregando todos os registros do banco de dados 
